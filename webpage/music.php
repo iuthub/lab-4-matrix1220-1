@@ -17,22 +17,31 @@
 		<div id="listarea">
 			<ul id="musiclist">
 				<?php
-					foreach(glob("songs/*.mp3") as $mp3) {
+					if(isset($_REQUEST["playlist"])) {
+						$playlist = explode("\n", file_get_contents('songs/'.$_REQUEST["playlist"]));
+					} else {
+						$playlist = scandir("songs");
+					}
+					foreach($playlist as $file) {
+						$file_basename = basename($file);
+						$tmp = explode('.', $file_basename);
+						$type = trim(strtolower($tmp[count($tmp)-1]));
+						$url = '';
+						if($type=='mp3') {
+							$url .= "songs/".$file;
+							$class = 'mp3item';
+						} elseif ($type=='txt') {
+							$url .= "music.php?playlist=" . $file_basename;
+							$class = 'playlistitem';
+						}
+						if(in_array($type, ['mp3', 'txt'])) { ?>
+						<li class="<?= $class ?>">
+							<a href="<?= $url ?>"><?= $file_basename ?></a>
+						</li>
+						<? } ?>
+				<?
+					}
 				?>
-				<li class="mp3item">
-					<a href="<?= $mp3 ?>"><?= basename($mp3) ?></a>
-					(5438375 b)
-				</li>
-				<? } ?>
-				
-				<?php
-					foreach(glob("songs/*.txt") as $txt) {
-						$txt_base = basename($txt);
-				?>
-				<li class="playlistitem">
-					<a href="music.php?playlist=<?= $txt_base ?>"><?= $txt_base ?></a>
-				</li>
-				<? } ?>
 			</ul>
 		</div>
 	</body>
