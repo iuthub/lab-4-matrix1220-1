@@ -24,8 +24,15 @@
 					(5438375 b)
 				</li>
 				<? } ?>
-
-
+				
+				<?php
+					foreach(glob("songs/*.txt") as $txt) {
+						$txt_base = basename($txt);
+				?>
+				<li class="playlistitem">
+					<a href="music.php?playlist=<?= $txt_base ?>"><?= $txt_base ?></a>
+				</li>
+				<? } ?>
 			</ul>
 		</div>
 	</body>
